@@ -15,16 +15,15 @@ except Exception:
     API_KEY = None
 
 if not API_KEY:
-    st.error("TMDB API key is missing.")
-    st.info(
-        "Create .streamlit/secrets.toml with: TMDB_API_KEY=\"your_tmdb_api_key_here\""
-    )
-    st.stop()
+    st.warning("TMDB API key is missing. Posters will not load until secrets are configured.")
 
 movies = pickle.load(open('movies.pkl', 'rb'))
 similarity = pickle.load(open('similarity.pkl', 'rb'))
 
 def fetch_poster(movie_id):
+    if not API_KEY:
+        return None
+
     url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={API_KEY}&language=en-US"
     response = requests.get(url, timeout=10)
 
